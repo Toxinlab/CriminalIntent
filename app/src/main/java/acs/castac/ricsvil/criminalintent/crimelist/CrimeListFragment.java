@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import acs.castac.ricsvil.criminalintent.Crime;
-import acs.castac.ricsvil.criminalintent.CrimeActivity;
 import acs.castac.ricsvil.criminalintent.CrimeLab;
+import acs.castac.ricsvil.criminalintent.CrimePagerActivity;
 import acs.castac.ricsvil.criminalintent.R;
 
 public class CrimeListFragment extends Fragment {
@@ -83,7 +82,7 @@ public class CrimeListFragment extends Fragment {
 
         @Override
         public void onClick(View view) {
-            Intent intent = CrimeActivity.newIntent(getContext(),mCrime.getmId());
+            Intent intent = CrimePagerActivity.newIntent(getContext(),mCrime.getmId());
             startActivity(intent);
         }
     }
