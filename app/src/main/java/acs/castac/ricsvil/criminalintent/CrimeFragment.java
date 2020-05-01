@@ -3,9 +3,11 @@ package acs.castac.ricsvil.criminalintent;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +34,7 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private Button mReportButton;
 
 
     public static CrimeFragment newInstance(UUID crimeID){
@@ -94,6 +97,18 @@ public class CrimeFragment extends Fragment {
         mTitleField.setText(mCrime.getmTitle());
         mSolvedCheckBox.setChecked(mCrime.ismSolved());
 
+        mReportButton = v.findViewById(R.id.crime_report);
+        mReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
+                i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
+                startActivity(i);
+            }
+        });
+
         return v;
     }
 
@@ -113,4 +128,36 @@ public class CrimeFragment extends Fragment {
     private void updateDate() {
         mDateButton.setText(mCrime.getmDate().toString());
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+    }
+
+    private String getCrimeReport() {
+        String solvedString = null;
+        if(mCrime.ismSolved()){
+            solvedString = getString(R.string.crime_report_solved);
+        } else {
+            solvedString = getString(R.string.crime_report_unsolved);
+        }
+
+        String dateFormat = "EEE, MMM dd";
+        String dateString = DateFormat.format(dateFormat,mCrime.getmDate()).toString();
+
+        String suspect = mCrime.getmSuspect();
+        if(suspect == null) {
+            suspect = getString(R.string.crime_report_no_suspect);
+        } else {
+            suspect = getString(R.string.crime_report_suspect, suspect);
+        }
+
+        String report = getString(R.string.crime_report, mCrime.getmTitle(), dateString, solvedString, suspect);
+
+        return report;
+    }
+
+
 }
