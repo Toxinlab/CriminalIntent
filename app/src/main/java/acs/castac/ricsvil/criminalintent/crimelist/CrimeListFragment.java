@@ -1,5 +1,6 @@
 package acs.castac.ricsvil.criminalintent.crimelist;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,6 +32,17 @@ public class CrimeListFragment extends Fragment {
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
+
+    public interface Callbacks{
+        void onCrimeSelected(Crime crime);
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
 
     @Nullable
     @Override
@@ -126,6 +138,12 @@ public class CrimeListFragment extends Fragment {
     public void onResume() {
         super.onResume();
         updateUI();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
     }
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener{ //ViewHolder

@@ -2,6 +2,7 @@ package acs.castac.ricsvil.criminalintent;
 
 import android.os.Bundle;
 
+import androidx.annotation.LayoutRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -10,10 +11,15 @@ public abstract class SingleFragmentActivity extends AppCompatActivity {
 
     protected abstract Fragment createFragment();
 
+    @LayoutRes
+    protected int getLayoutResId() {
+        return R.layout.crime_main;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.crime_main);
+        setContentView(getLayoutResId());
 
         FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);

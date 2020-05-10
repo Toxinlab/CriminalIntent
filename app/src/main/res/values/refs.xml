@@ -1,0 +1,7 @@
+<resources>
+
+    <item name="activity_masterdetail" type="layout">
+        @layout/crime_main
+    </item>
+
+</resources>
