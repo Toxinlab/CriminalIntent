@@ -15,7 +15,7 @@ import androidx.viewpager.widget.ViewPager;
 import java.util.List;
 import java.util.UUID;
 
-public class CrimePagerActivity extends AppCompatActivity {
+public class CrimePagerActivity extends AppCompatActivity implements CrimeFragment.Callbacks {
 
     public static final String EXTRA_CRIME_ID = "Ima jedan lik, mnogo pametan, profesor se zove";
 
@@ -61,4 +61,8 @@ public class CrimePagerActivity extends AppCompatActivity {
         return intent;
     }
 
+    @Override
+    public void onCrimeUpdated(Crime crime) {
+
+    }
 }

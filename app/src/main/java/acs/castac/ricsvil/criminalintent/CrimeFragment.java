@@ -2,6 +2,7 @@ package acs.castac.ricsvil.criminalintent;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -54,7 +55,12 @@ public class CrimeFragment extends Fragment {
     private ImageButton mPhotoButton;
     private ImageView mPhotoView;
     private File mPhotoFile;
+    private Callbacks mCallbacks;
 
+
+    public interface Callbacks {
+        void onCrimeUpdated(Crime crime);
+    }
 
 
     public static CrimeFragment newInstance(UUID crimeID){
@@ -74,6 +80,23 @@ public class CrimeFragment extends Fragment {
         mPhotoFile = CrimeLab.getInstance(getActivity()).getPhotoFile(mCrime);
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mCallbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mCallbacks = null;
+    }
+
+    private void updateCrime() {
+        CrimeLab.getInstance(getActivity()).updateCrime(mCrime);
+        mCallbacks.onCrimeUpdated(mCrime);
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -88,6 +111,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 mCrime.setmTitle(charSequence.toString());
+                updateCrime();
             }
 
             @Override
@@ -112,6 +136,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mCrime.setmSolved(b);
+                updateCrime();
             }
         });
 
@@ -190,6 +215,7 @@ public class CrimeFragment extends Fragment {
         if(requestCode == REQUEST_DATE){
             Date date = (Date) data.getSerializableExtra(DatePickerFragment.EXTRA_DATE);
             mCrime.setmDate(date);
+            updateCrime();
             updateDate();
         } else if(requestCode == REQUEST_CONTACT && data != null){
             Uri contactUri = data.getData();
@@ -215,6 +241,7 @@ public class CrimeFragment extends Fragment {
         } else if(requestCode == REQUEST_PHOTO) {
             Uri uri = FileProvider.getUriForFile(getActivity(), "acs.castac.ricsvil.criminalintent.fileprovider",mPhotoFile);
             getActivity().revokeUriPermission(uri,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            updateCrime();
             updatePhotoView();
         }
     }
